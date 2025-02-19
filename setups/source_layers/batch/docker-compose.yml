@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_source
+    environment:
+      POSTGRES_DB: demo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - riset-lakehouse-networks
+    volumes:
+      - ./data:/docker-entrypoint-initdb.d/
+      - postgres_source:/var/lib/postgresql/data
+
+networks:
+  riset-lakehouse-networks:
+    name: riset-lakehouse-networks
+    external: True
+
+volumes:
+  postgres_source:
+    name: postgres_source
+    driver: local
