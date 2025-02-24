@@ -259,8 +259,8 @@ services:
 
 networks:
   riset-lakehouse-networks:
-    driver: bridge
     name: riset-lakehouse-networks
+    external: True
 
 volumes:
   airflow-metadata-2:
