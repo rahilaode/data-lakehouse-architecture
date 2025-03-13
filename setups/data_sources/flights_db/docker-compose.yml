@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  flights_db:
+    image: postgres:13 
+    container_name: flights_db
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_DB: demo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres 
+    command: ["postgres", "-c", "wal_level=logical"]
+    volumes:
+      - flights_db_volume:/var/lib/postgresql/data
+      - ./data/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - riset-lakehouse-networks
+
+networks:
+  riset-lakehouse-networks:
+    name: riset-lakehouse-networks
+    driver: bridge
+
+volumes:
+  flights_db_volume:
+    name: flights_db_volume
+    driver: local

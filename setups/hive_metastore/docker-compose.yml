@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  hive-metadata-postgres:
+    image: postgres:13
+    container_name: hive-metadata-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: metastore
+      POSTGRES_USER: hive
+      POSTGRES_PASSWORD: hive
+    ports:
+      - "5434:5432"
+    volumes:
+      - hive-metadata-postgres-volumes:/var/lib/postgresql/data
+    networks:
+      - riset-lakehouse-networks
+
+  hive-metastore:
+    image: apache/hive:4.0.1
+    container_name: hive-metastore
+    depends_on:
+      - hive-metadata-postgres
+    environment:
+      SERVICE_NAME: metastore
+      HIVE_METASTORE_DATABASE_HOST: postgres
+      HIVE_METASTORE_DATABASE_PORT: 5432
+      HIVE_METASTORE_DATABASE_NAME: metastore
+      HIVE_METASTORE_DATABASE_USER: hive
+      HIVE_METASTORE_DATABASE_PASSWORD: hive
+    command: ["hive", "--service", "metastore"]
+    ports:
+      - "9083:9083"
+
+    networks:
+      - riset-lakehouse-networks
+
+networks:
+  riset-lakehouse-networks:
+    external: True
+
+volumes:
+  hive-metadata-postgres-volumes:
+    driver: local
+    name: hive-metadata-postgres-volumes

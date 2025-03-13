@@ -17,9 +17,9 @@ x-airflow-common:
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
     AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_WEBSERVER_SECRET_KEY}
     # Logging to S3 config
-    AIRFLOW__LOGGING__REMOTE_LOGGING: True
-    AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER: ${AIRFLOW_LOGGING_REMOTE_BASE_LOG_FOLDER}
-    AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: ${AIRFLOW_LOGGING_REMOTE_LOG_CONN_ID}
+    # AIRFLOW__LOGGING__REMOTE_LOGGING: True
+    # AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER: ${AIRFLOW_LOGGING_REMOTE_BASE_LOG_FOLDER}
+    # AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: ${AIRFLOW_LOGGING_REMOTE_LOG_CONN_ID}
     # Monitoring config
     # AIRFLOW__METRICS__STATSD_ON: True
     # AIRFLOW__METRICS__STATSD_HOST: ${AIRFLOW_METRICS_STATSD_HOST}
@@ -36,12 +36,12 @@ x-airflow-common:
     &airflow-common-depends-on
     redis:
       condition: service_healthy
-    airflow-metadata-2:
+    airflow-metadata:
       condition: service_healthy
 
 services:
-  airflow-metadata-2:
-    container_name: airflow-metadata-2
+  airflow-metadata:
+    container_name: airflow-metadata
     image: postgres:13
     environment:
       POSTGRES_USER: ${AIRFLOW_DB_USER}
@@ -50,7 +50,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - airflow-metadata-2:/var/lib/postgresql/data
+      - airflow-metadata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "${AIRFLOW_DB_USER}"]
       interval: 10s
@@ -263,6 +263,6 @@ networks:
     external: True
 
 volumes:
-  airflow-metadata-2:
+  airflow-metadata:
     driver: local
-    name: airflow-metadata-2
+    name: airflow-metadata
