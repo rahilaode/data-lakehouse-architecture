@@ -2,38 +2,64 @@ version: '3.8'
 
 services:
   hive-metadata-postgres:
-    image: postgres:13
+    image: postgres
     container_name: hive-metadata-postgres
+    hostname: hive-metadata-postgres
     restart: always
     environment:
-      POSTGRES_DB: metastore
+      POSTGRES_DB: hivemetastore
       POSTGRES_USER: hive
       POSTGRES_PASSWORD: hive
     ports:
       - "5434:5432"
-    volumes:
-      - hive-metadata-postgres-volumes:/var/lib/postgresql/data
+    # volumes:
+    #   - hive-metadata-postgres-volumes:/var/lib/postgresql/data
     networks:
       - riset-lakehouse-networks
-
   hive-metastore:
-    image: apache/hive:4.0.1
+    image: naushadh/hive-metastore
     container_name: hive-metastore
+    environment:
+      DATABASE_HOST: hive-metadata-postgres
+      DATABASE_DB: hivemetastore
+      DATABASE_USER: hive
+      DATABASE_PASSWORD: hive
+      AWS_ACCESS_KEY_ID: minio
+      AWS_SECRET_ACCESS_KEY: minio123
+      S3_ENDPOINT_URL: http://minio:9000
+      S3_BUCKET: hive
+      S3_PREFIX: hive
     depends_on:
       - hive-metadata-postgres
-    environment:
-      SERVICE_NAME: metastore
-      HIVE_METASTORE_DATABASE_HOST: postgres
-      HIVE_METASTORE_DATABASE_PORT: 5432
-      HIVE_METASTORE_DATABASE_NAME: metastore
-      HIVE_METASTORE_DATABASE_USER: hive
-      HIVE_METASTORE_DATABASE_PASSWORD: hive
-    command: ["hive", "--service", "metastore"]
     ports:
-      - "9083:9083"
-
+      - 9083:9083
     networks:
       - riset-lakehouse-networks
+
+
+  # hive-metastore:
+  #   build: 
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   image: hive-metastore
+  #   container_name: hive-metastore
+  #   depends_on:
+  #     - hive-metadata-postgres
+    # environment:
+    #   SERVICE_NAME: metastore
+    #   HIVE_METASTORE_DATABASE_HOST: postgres
+    #   HIVE_METASTORE_DATABASE_PORT: 5432
+    #   HIVE_METASTORE_DATABASE_NAME: metastore
+    #   HIVE_METASTORE_DATABASE_USER: hive
+    #   HIVE_METASTORE_DATABASE_PASSWORD: hive
+    # command: ["hive", "--service", "metastore"]
+    # volumes:
+    #   - ./conf/hive-site.xml:/opt/hive/conf/hive-site.xml
+    # ports:
+    #   - "9083:9083"
+
+    # networks:
+    #   - riset-lakehouse-networks
 
 networks:
   riset-lakehouse-networks:

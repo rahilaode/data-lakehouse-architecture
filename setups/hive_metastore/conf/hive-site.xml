@@ -1,0 +1,34 @@
+<configuration>
+   <property>
+      <name>javax.jdo.option.ConnectionURL</name>
+      <value>jdbc:postgresql://hive-metadata-postgres:5432/hivemetastore?createDatabaseIfNotExist=true</value>
+      <description>JDBC connect string for a JDBC metastore</description>
+   </property>
+   <property>
+      <name>javax.jdo.option.ConnectionDriverName</name>
+      <value>org.postgresql.Driver</value>
+      <description>Driver class name for a JDBC metastore</description>
+   </property>
+   <property>
+      <name>javax.jdo.option.ConnectionUserName</name>
+      <value>hive</value>
+      <description>Username to use against metastore database</description>
+   </property>
+   <property>
+      <name>javax.jdo.option.ConnectionPassword</name>
+      <value>hive</value>
+      <description>Password to use against metastore database</description>
+   </property>
+   <property>
+      <name>datanucleus.autoCreateSchema</name>
+      <value>true</value>
+   </property>
+   <property>
+      <name>datanucleus.fixedDatastore</name>
+      <value>true</value>
+   </property>
+   <property>
+      <name>datanucleus.autoCreateTables</name>
+      <value>True</value>
+   </property>
+</configuration>

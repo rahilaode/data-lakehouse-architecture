@@ -1,7 +1,6 @@
 from airflow.decorators import task_group, dag
 from airflow.models import Variable
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
-from dags.tasks.extract import extract
 from airflow.utils.dates import days_ago
 
 # Constants
@@ -40,7 +39,7 @@ def flights_data_pipeline():
     extract = SparkSubmitOperator(
         task_id='flights-table',
         conn_id="spark-conn",
-        application="dags/tasks/extract.py",
+        application="/opt/airflow/dags/flights_data_pipeline/tasks/extract.py",
         conf=spark_conf,
         jars=','.join(jar_list),
         trigger_rule='none_failed',
