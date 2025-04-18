@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+
+  trino:
+    image: trinodb/trino:392
+    container_name: trino
+    hostname: trino
+    volumes:
+      - ./etc/trino:/etc/trino/
+    ports:
+      - '8081:8080'
+    networks:
+      - riset-lakehouse-networks
+
+networks:
+  riset-lakehouse-networks:
+    external: True

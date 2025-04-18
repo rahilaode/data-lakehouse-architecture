@@ -26,11 +26,23 @@ spark_conf = {
     'spark.dynamicAllocation.maxExecutors': '3',
     'spark.dynamicAllocation.minExecutors': '1',
     'spark.dynamicAllocation.initialExecutors': '1',
-    'spark.executor.memory': '4g',  # Define RAM per executor
-    'spark.executor.cores': '2',  # Define cores per executor
+    'spark.executor.memory': '8g',  # Define RAM per executor
+    'spark.executor.cores': '4',  # Define cores per executor
     'spark.scheduler.mode': 'FAIR'
 }
 
+table_to_extract = [
+    "aircrafts_data",
+    "airports_data",
+    "bookings",
+    "flights",
+    "seats",
+    "tickets",
+    "ticket_flights",
+    "boarding_passes"
+]
+
+incremental = False
 @dag(
     dag_id='flights_data_pipeline',
     schedule='@daily',
@@ -38,15 +50,26 @@ spark_conf = {
     tags=['flights_data_pipeline'],
 )
 def flights_data_pipeline():
-    extract = SparkSubmitOperator(
-        task_id='flights-table',
-        conn_id="spark-conn",
-        application="/opt/airflow/dags/flights_data_pipeline/tasks/extract.py",
-        conf=spark_conf,
-        jars=','.join(jar_list),
-        trigger_rule='none_failed',
-    )
-    
-    extract
-    
+    previous_task = None
+
+    for table_name in table_to_extract:
+        current_task = SparkSubmitOperator(
+            task_id=f"extract-load__{table_name}",
+            conn_id="spark-conn",
+            application="/opt/airflow/dags/flights_data_pipeline/tasks/extract.py",
+            conf=spark_conf,
+            jars=','.join(jar_list),
+            trigger_rule='none_failed',
+            application_args=[
+                f"{table_name}",
+                f"{incremental}",
+                f"{DATE}"
+            ]
+        )
+        # # Set task dependencies
+        # if previous_task:
+        #     previous_task >> current_task
+
+        # previous_task = current_task
+
 flights_data_pipeline()
