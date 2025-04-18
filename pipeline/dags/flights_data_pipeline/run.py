@@ -10,11 +10,13 @@ DATE = '{{ ds }}'
 jar_list = [
     '/opt/spark/jars/hadoop-aws-3.3.1.jar',
     '/opt/spark/jars/aws-java-sdk-bundle-1.11.901.jar',
-    '/opt/spark/jars/postgresql-42.2.23.jar'
+    '/opt/spark/jars/postgresql-42.2.23.jar',
+    '/opt/spark/jars/iceberg-spark-runtime-3.5_2.12-1.4.3.jar'
 ]
 
 # Define Spark configuration
 spark_conf = {
+    'spark.jars.packages': 'org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.4.3',
     'spark.hadoop.fs.s3a.access.key': 'minio',
     'spark.hadoop.fs.s3a.secret.key': 'minio123',
     'spark.hadoop.fs.s3a.endpoint': 'http://minio:9000',

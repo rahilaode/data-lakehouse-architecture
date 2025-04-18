@@ -1,7 +1,9 @@
 version: '3.8'
 services:
   spark-master:
-    image: bitnami/spark:latest
+    image: spark-custom:latest
+    build:
+      context: .
     command: bin/spark-class org.apache.spark.deploy.master.Master
     container_name: spark-master
     ports:
@@ -11,7 +13,9 @@ services:
       - riset-lakehouse-networks
 
   spark-worker:
-    image: bitnami/spark:latest
+    image: spark-custom:latest
+    build:
+      context: .
     container_name: spark-worker-1
     command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
     depends_on:
