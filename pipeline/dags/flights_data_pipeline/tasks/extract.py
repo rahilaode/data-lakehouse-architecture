@@ -13,7 +13,7 @@ spark = SparkSession.builder \
     .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions") \
     .config("spark.sql.catalog.demo", "org.apache.iceberg.spark.SparkCatalog") \
     .config("spark.sql.catalog.demo.type", "hadoop") \
-    .config("spark.sql.catalog.demo.warehouse", "s3a://warehouse/iceberg-sample-data/") \
+    .config("spark.sql.catalog.demo.warehouse", "s3a://warehouse/staging/") \
     .config("spark.hadoop.fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider") \
     .config("spark.hadoop.fs.s3a.access.key", AWS_ACCESS_KEY_ID) \
     .config("spark.hadoop.fs.s3a.secret.key", AWS_SECRET_ACCESS_KEY) \
@@ -22,7 +22,7 @@ spark = SparkSession.builder \
     .getOrCreate()
 
 # Read from PostgreSQL
-query = "(SELECT * FROM aircrafts_data) as data"
+query = "(SELECT * FROM bookings.aircrafts_data) as data"
 df = spark.read.jdbc(
     url="jdbc:postgresql://flights_db:5432/demo",
     table=query,
@@ -35,7 +35,7 @@ df = spark.read.jdbc(
 
 df.show()
 
-# Create Iceberg table (if it doesn't exist)
+# Create Iceberg table (if not exists), partitioned by aircraft_code
 spark.sql("""
     CREATE TABLE IF NOT EXISTS demo.aircrafts_data (
         aircraft_code STRING,
@@ -43,7 +43,8 @@ spark.sql("""
         range INT
     )
     USING iceberg
+    PARTITIONED BY (aircraft_code)
 """)
 
-# Insert to Iceberg table (append mode)
-df.writeTo("demo.aircrafts_data").append()
+# Overwrite specific partitions based on aircraft_code
+df.writeTo("demo.aircrafts_data").overwritePartitions()
