@@ -66,10 +66,10 @@ def flights_data_pipeline():
                 f"{DATE}"
             ]
         )
-        # # Set task dependencies
-        # if previous_task:
-        #     previous_task >> current_task
+        # Set task dependencies
+        if previous_task:
+            previous_task >> current_task
 
-        # previous_task = current_task
+        previous_task = current_task
 
 flights_data_pipeline()
