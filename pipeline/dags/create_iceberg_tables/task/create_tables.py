@@ -9,9 +9,9 @@ spark = SparkSession.builder \
     .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions") \
     .config("spark.sql.catalog.demo", "org.apache.iceberg.spark.SparkCatalog") \
     .config("spark.sql.catalog.demo.type", "hive") \
-    .config("spark.sql.catalog.demo.uri", "thrift://34.227.73.6:9083") \
+    .config("spark.sql.catalog.demo.uri", "thrift://hive-metastore:9083") \
     .config("spark.sql.catalog.demo.warehouse", "s3a://warehouse/staging/") \
-    .config("spark.hadoop.fs.s3a.endpoint", "http://34.227.73.6:9000") \
+    .config("spark.hadoop.fs.s3a.endpoint", "http://minio:9000") \
     .config("spark.hadoop.fs.s3a.access.key", AWS_ACCESS_KEY_ID) \
     .config("spark.hadoop.fs.s3a.secret.key", AWS_SECRET_ACCESS_KEY) \
     .config("spark.hadoop.fs.s3a.path.style.access", "true") \

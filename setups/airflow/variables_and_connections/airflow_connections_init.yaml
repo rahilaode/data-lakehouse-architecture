@@ -11,7 +11,7 @@ spark-conn:
   conn_type: spark
   description: Koneksi ke spark
   extra: ''
-  host: spark://34.227.73.6
+  host: spark://spark-master
   login: ''
   password: null
   port: 7077
@@ -19,7 +19,7 @@ spark-conn:
 s3-conn:
   conn_type: aws
   description: Koneksi ke minio / s3 (data lake)
-  extra: '{"endpoint_url": "http://34.227.73.6:9000"}'
+  extra: '{"endpoint_url": "http://minio:9000"}'
   host: ''
   login: minio
   password: minio123
