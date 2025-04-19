@@ -1,3 +1,7 @@
+# Start data source
+docker compose -f ./setups/data_sources/flights_db/docker-compose.yml down -v
+docker compose -f ./setups/data_sources/flights_db/docker-compose.yml up --build --detach
+
 # Start data storage (minio)
 docker compose -f ./setups/minio/docker-compose.yml down -v
 docker compose -f ./setups/minio/docker-compose.yml up --build --detach

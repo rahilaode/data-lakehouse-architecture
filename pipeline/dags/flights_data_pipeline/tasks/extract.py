@@ -16,7 +16,7 @@ def extract_load(table_name, incremental, date):
             .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions") \
             .config("spark.sql.catalog.demo", "org.apache.iceberg.spark.SparkCatalog") \
             .config("spark.sql.catalog.demo.type", "hive") \
-            .config("spark.sql.catalog.demo.uri", "thrift://hive-metastore:9083") \
+            .config("spark.sql.catalog.demo.uri", "thrift://34.227.73.6:9083") \
             .config("spark.sql.catalog.demo.warehouse", "s3a://warehouse/staging/") \
             .config("spark.hadoop.fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider") \
             .config("spark.hadoop.fs.s3a.access.key", AWS_ACCESS_KEY_ID) \
@@ -31,7 +31,7 @@ def extract_load(table_name, incremental, date):
             query = f"(SELECT * FROM bookings.{table_name}) as data"
 
         df = spark.read.jdbc(
-            url="jdbc:postgresql://flights_db:5432/demo",
+            url="jdbc:postgresql://34.227.73.6:5432/demo",
             table=query,
             properties={
                 "user": "postgres",
