@@ -18,10 +18,7 @@ spark = SparkSession.builder \
     .config("spark.hadoop.fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider") \
     .getOrCreate()
 
-# # Optional: Buat namespace (seperti schema) jika belum ada
-# spark.sql("CREATE NAMESPACE IF NOT EXISTS demo")
-
-# Buat semua tabel di catalog `demo` dengan penamaan penuh
+# -- Tabel aircrafts_data (dimensi) - no partition
 spark.sql("""
     CREATE TABLE IF NOT EXISTS demo.default.aircrafts_data (
         aircraft_code STRING,
@@ -31,9 +28,9 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (aircraft_code)
 """)
 
+# -- Tabel airports_data (dimensi) - no partition
 spark.sql("""
     CREATE TABLE IF NOT EXISTS demo.default.airports_data (
         airport_code STRING,
@@ -45,9 +42,9 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (airport_code)
 """)
 
+# -- Tabel boarding_passes
 spark.sql("""
     CREATE TABLE IF NOT EXISTS demo.default.boarding_passes (
         ticket_no STRING,
@@ -58,9 +55,10 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (ticket_no, flight_id)
+    PARTITIONED BY (month(created_at))
 """)
 
+# -- Tabel bookings
 spark.sql("""
     CREATE TABLE IF NOT EXISTS demo.default.bookings (
         book_ref STRING,
@@ -70,9 +68,10 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (book_ref)
+    PARTITIONED BY (month(book_date))
 """)
 
+# -- Tabel flights
 spark.sql("""
     CREATE TABLE IF NOT EXISTS demo.default.flights (
         flight_id INT,
@@ -89,9 +88,10 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (flight_id)
+    PARTITIONED BY (month(scheduled_departure), arrival_airport)
 """)
 
+# -- Tabel seats
 spark.sql("""
     CREATE TABLE IF NOT EXISTS demo.default.seats (
         aircraft_code STRING,
@@ -101,9 +101,10 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (aircraft_code, seat_no)
+    PARTITIONED BY (fare_conditions)
 """)
 
+# -- Tabel ticket_flights
 spark.sql("""
     CREATE TABLE IF NOT EXISTS demo.default.ticket_flights (
         ticket_no STRING,
@@ -114,9 +115,10 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (ticket_no, flight_id)
+    PARTITIONED BY (month(created_at), fare_conditions)
 """)
 
+# -- Tabel tickets
 spark.sql("""
     CREATE TABLE IF NOT EXISTS demo.default.tickets (
         ticket_no STRING,
@@ -128,7 +130,7 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (ticket_no)
+    PARTITIONED BY (day(created_at))
 """)
 
 # Tutup SparkSession

@@ -12,7 +12,7 @@ services:
     networks:
       - riset-lakehouse-networks
 
-  spark-worker:
+  spark-worker-1:
     image: spark-custom:latest
     build:
       context: .
@@ -22,8 +22,40 @@ services:
       - spark-master
     environment:
       SPARK_MODE: worker
-      SPARK_WORKER_CORES: 4
-      SPARK_WORKER_MEMORY: 8g
+      SPARK_WORKER_CORES: 2
+      SPARK_WORKER_MEMORY: 4g
+      SPARK_MASTER_URL: spark://spark-master:7077
+    networks:
+      - riset-lakehouse-networks
+
+  spark-worker-2:
+    image: spark-custom:latest
+    build:
+      context: .
+    container_name: spark-worker-2
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    depends_on:
+      - spark-master
+    environment:
+      SPARK_MODE: worker
+      SPARK_WORKER_CORES: 2
+      SPARK_WORKER_MEMORY: 4g
+      SPARK_MASTER_URL: spark://spark-master:7077
+    networks:
+      - riset-lakehouse-networks
+
+  spark-worker-3:
+    image: spark-custom:latest
+    build:
+      context: .
+    container_name: spark-worker-3
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    depends_on:
+      - spark-master
+    environment:
+      SPARK_MODE: worker
+      SPARK_WORKER_CORES: 2
+      SPARK_WORKER_MEMORY: 4g
       SPARK_MASTER_URL: spark://spark-master:7077
     networks:
       - riset-lakehouse-networks
