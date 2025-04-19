@@ -1,30 +1,29 @@
 from pyspark.sql import SparkSession
-import logging
 
-BASE_PATH = "/opt/airflow/dags"
 AWS_ACCESS_KEY_ID = "minio"
 AWS_SECRET_ACCESS_KEY = "minio123"
 
-# Initialize Spark session
+# Initialize SparkSession with Iceberg + Hive Metastore + MinIO (S3A)
 spark = SparkSession.builder \
-    .appName("Insert to Iceberg - aircrafts_data") \
-    .config("spark.jars", "/opt/spark/jars/postgresql-42.2.23.jar") \
-    .config("spark.jars.packages", "org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.4.3") \
+    .appName("Create Iceberg Tables") \
     .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions") \
     .config("spark.sql.catalog.demo", "org.apache.iceberg.spark.SparkCatalog") \
-    .config("spark.sql.catalog.demo.type", "hadoop") \
+    .config("spark.sql.catalog.demo.type", "hive") \
+    .config("spark.sql.catalog.demo.uri", "thrift://hive-metastore:9083") \
     .config("spark.sql.catalog.demo.warehouse", "s3a://warehouse/staging/") \
-    .config("spark.hadoop.fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider") \
+    .config("spark.hadoop.fs.s3a.endpoint", "http://minio:9000") \
     .config("spark.hadoop.fs.s3a.access.key", AWS_ACCESS_KEY_ID) \
     .config("spark.hadoop.fs.s3a.secret.key", AWS_SECRET_ACCESS_KEY) \
-    .config("spark.hadoop.fs.s3a.endpoint", "http://minio:9000") \
     .config("spark.hadoop.fs.s3a.path.style.access", "true") \
+    .config("spark.hadoop.fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider") \
     .getOrCreate()
 
+# # Optional: Buat namespace (seperti schema) jika belum ada
+# spark.sql("CREATE NAMESPACE IF NOT EXISTS demo")
 
-# Create Iceberg table
+# Buat semua tabel di catalog `demo` dengan penamaan penuh
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.aircrafts_data (
+    CREATE TABLE IF NOT EXISTS demo.default.aircrafts_data (
         aircraft_code STRING,
         model STRING,
         range INT,
@@ -32,11 +31,11 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (aircraft_code);
+    PARTITIONED BY (aircraft_code)
 """)
 
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.airports_data (
+    CREATE TABLE IF NOT EXISTS demo.default.airports_data (
         airport_code STRING,
         airport_name STRING,
         city STRING,
@@ -46,11 +45,11 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (airport_code);
+    PARTITIONED BY (airport_code)
 """)
 
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.boarding_passes (
+    CREATE TABLE IF NOT EXISTS demo.default.boarding_passes (
         ticket_no STRING,
         flight_id INT,
         boarding_no INT,
@@ -59,11 +58,11 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (ticket_no, flight_id);
+    PARTITIONED BY (ticket_no, flight_id)
 """)
 
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.bookings (
+    CREATE TABLE IF NOT EXISTS demo.default.bookings (
         book_ref STRING,
         book_date TIMESTAMP,
         total_amount DECIMAL(10,2),
@@ -71,11 +70,11 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (book_ref);
+    PARTITIONED BY (book_ref)
 """)
 
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.flights (
+    CREATE TABLE IF NOT EXISTS demo.default.flights (
         flight_id INT,
         flight_no STRING,
         scheduled_departure TIMESTAMP,
@@ -90,11 +89,11 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (flight_id);
+    PARTITIONED BY (flight_id)
 """)
 
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.seats (
+    CREATE TABLE IF NOT EXISTS demo.default.seats (
         aircraft_code STRING,
         seat_no STRING,
         fare_conditions STRING,
@@ -102,11 +101,11 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (aircraft_code, seat_no);
+    PARTITIONED BY (aircraft_code, seat_no)
 """)
 
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.ticket_flights (
+    CREATE TABLE IF NOT EXISTS demo.default.ticket_flights (
         ticket_no STRING,
         flight_id INT,
         fare_conditions STRING,
@@ -115,11 +114,11 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (ticket_no, flight_id);
+    PARTITIONED BY (ticket_no, flight_id)
 """)
 
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.tickets (
+    CREATE TABLE IF NOT EXISTS demo.default.tickets (
         ticket_no STRING,
         book_ref STRING,
         passenger_id STRING,
@@ -129,7 +128,8 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
-    PARTITIONED BY (ticket_no);
+    PARTITIONED BY (ticket_no)
 """)
 
+# Tutup SparkSession
 spark.stop()

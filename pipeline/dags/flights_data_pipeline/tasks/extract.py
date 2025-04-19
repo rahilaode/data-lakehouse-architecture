@@ -15,7 +15,8 @@ def extract_load(table_name, incremental, date):
             .config("spark.jars.packages", "org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.4.3") \
             .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions") \
             .config("spark.sql.catalog.demo", "org.apache.iceberg.spark.SparkCatalog") \
-            .config("spark.sql.catalog.demo.type", "hadoop") \
+            .config("spark.sql.catalog.demo.type", "hive") \
+            .config("spark.sql.catalog.demo.uri", "thrift://hive-metastore:9083") \
             .config("spark.sql.catalog.demo.warehouse", "s3a://warehouse/staging/") \
             .config("spark.hadoop.fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider") \
             .config("spark.hadoop.fs.s3a.access.key", AWS_ACCESS_KEY_ID) \
@@ -42,7 +43,7 @@ def extract_load(table_name, incremental, date):
         print("test")
         print(df.show())
         # Overwrite specific partitions based on i
-        df.writeTo(f"demo.{table_name}").overwritePartitions()
+        df.writeTo(f"demo.default.{table_name}").overwritePartitions()
 
         spark.stop()
 

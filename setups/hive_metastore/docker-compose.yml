@@ -16,6 +16,8 @@ services:
     #   - hive-metadata-postgres-volumes:/var/lib/postgresql/data
     networks:
       - riset-lakehouse-networks
+
+
   hive-metastore:
     image: naushadh/hive-metastore
     container_name: hive-metastore
@@ -45,21 +47,52 @@ services:
   #   container_name: hive-metastore
   #   depends_on:
   #     - hive-metadata-postgres
-    # environment:
-    #   SERVICE_NAME: metastore
-    #   HIVE_METASTORE_DATABASE_HOST: postgres
-    #   HIVE_METASTORE_DATABASE_PORT: 5432
-    #   HIVE_METASTORE_DATABASE_NAME: metastore
-    #   HIVE_METASTORE_DATABASE_USER: hive
-    #   HIVE_METASTORE_DATABASE_PASSWORD: hive
-    # command: ["hive", "--service", "metastore"]
-    # volumes:
-    #   - ./conf/hive-site.xml:/opt/hive/conf/hive-site.xml
-    # ports:
-    #   - "9083:9083"
+  #   environment:
+  #     SERVICE_NAME: metastore
+  #     HIVE_METASTORE_DATABASE_HOST: postgres
+  #     HIVE_METASTORE_DATABASE_PORT: 5432
+  #     HIVE_METASTORE_DATABASE_NAME: metastore
+  #     HIVE_METASTORE_DATABASE_USER: hive
+  #     HIVE_METASTORE_DATABASE_PASSWORD: hive
+  #   command: ["hive", "--service", "metastore"]
+  #   volumes:
+  #     - ./conf/hive-site.xml:/opt/hive/conf/hive-site.xml
+  #   ports:
+  #     - "9083:9083"
 
-    # networks:
-    #   - riset-lakehouse-networks
+  #   networks:
+  #     - riset-lakehouse-networks
+
+# version: '3.7'
+# services:
+#   mariadb:
+#     image: 'mariadb:latest'
+#     container_name: mariadb
+#     hostname: mariadb
+#     ports:
+#       - '3306:3306'
+#     environment:
+#       MYSQL_ROOT_PASSWORD: admin
+#       MYSQL_USER: admin
+#       MYSQL_PASSWORD: admin
+#       MYSQL_DATABASE: metastore_db
+#     networks:
+#       - riset-lakehouse-networks
+
+#   hive-metastore:
+#     hostname: hive-metastore
+#     container_name: hive-metastore
+#     image: 'bitsondatadev/hive-metastore:latest'
+#     ports:
+#       - '9083:9083' # Metastore Thrift
+#     volumes:
+#       - ./config/metastore-site.xml:/opt/apache-hive-metastore-3.0.0-bin/conf/metastore-site.xml:ro
+#     environment:
+#       METASTORE_DB_HOSTNAME: mariadb
+#     depends_on:
+#       - mariadb
+#     networks:
+#       - riset-lakehouse-networks
 
 networks:
   riset-lakehouse-networks:

@@ -7,7 +7,7 @@ services:
     container_name: trino
     hostname: trino
     volumes:
-      - ./etc/trino:/etc/trino/
+      - ./etc:/etc/trino/
     ports:
       - '8081:8080'
     networks:
