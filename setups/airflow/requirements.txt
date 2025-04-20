@@ -6,5 +6,7 @@ apache-airflow-providers-postgres
 apache-airflow-providers-amazon
 apache-airflow-providers-slack
 apache-airflow-providers-apache-spark
+apache-airflow-providers-trino
 pangres
 pyspark
+psycopg2-binary

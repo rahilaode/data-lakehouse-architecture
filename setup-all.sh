@@ -20,3 +20,7 @@ docker compose -f ./setups/airflow/docker-compose.yml up --build --detach
 
 # Insert variables
 docker exec -it airflow-webserver airflow connections import /init/variables_and_connections/airflow_connections_init.yaml
+
+# Start Trino
+docker compose -f ./setups/trino/docker-compose.yml down -v
+docker compose -f ./setups/trino/docker-compose.yml up --build --detach

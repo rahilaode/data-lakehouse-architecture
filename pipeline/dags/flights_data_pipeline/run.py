@@ -51,26 +51,43 @@ incremental = False
     tags=['flights_data_pipeline'],
 )
 def flights_data_pipeline():
-    previous_task = None
+    # TASK GROUP TO EXTRACT DATA FROM FLIGHTS DB
+    @task_group()
+    def extract_load():
+        previous_task = None
 
-    for table_name in table_to_extract:
-        current_task = SparkSubmitOperator(
-            task_id=f"extract-load__{table_name}",
+        for table_name in table_to_extract:
+            current_task = SparkSubmitOperator(
+                task_id=f"extract-load__{table_name}",
+                conn_id="spark-conn",
+                application="/opt/airflow/dags/flights_data_pipeline/tasks/extract.py",
+                conf=spark_conf,
+                jars=','.join(jar_list),
+                trigger_rule='none_failed',
+                application_args=[
+                    f"{table_name}",
+                    f"{incremental}",
+                    f"{DATE}"
+                ]
+            )
+            # Set task dependencies
+            if previous_task:
+                previous_task >> current_task
+
+            previous_task = current_task
+
+    # TASK GROUP TO TRANSFORM DATA
+    @task_group()
+    def transform():
+        SparkSubmitOperator(
+            task_id="transform",
             conn_id="spark-conn",
-            application="/opt/airflow/dags/flights_data_pipeline/tasks/extract.py",
+            application="/opt/airflow/dags/flights_data_pipeline/tasks/transform.py",
             conf=spark_conf,
             jars=','.join(jar_list),
             trigger_rule='none_failed',
-            application_args=[
-                f"{table_name}",
-                f"{incremental}",
-                f"{DATE}"
-            ]
         )
-        # Set task dependencies
-        if previous_task:
-            previous_task >> current_task
 
-        previous_task = current_task
+    extract_load() >> transform()
 
 flights_data_pipeline()

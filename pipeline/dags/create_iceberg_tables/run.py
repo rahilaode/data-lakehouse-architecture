@@ -35,15 +35,24 @@ spark_conf = {
     tags=['create_iceberg_tables'],
 )
 def create_iceberg_tables():
-    extract = SparkSubmitOperator(
-        task_id='create_tables',
+    create_raw_tables = SparkSubmitOperator(
+        task_id='create_raw_tables',
         conn_id="spark-conn",
         application="/opt/airflow/dags/create_iceberg_tables/task/create_tables.py",
         conf=spark_conf,
         jars=','.join(jar_list),
         trigger_rule='none_failed',
     )
+
+    # create_warehouse_tables = SparkSubmitOperator(
+    #     task_id='create_warehouse_tables',
+    #     conn_id="spark-conn",
+    #     application="/opt/airflow/dags/create_iceberg_tables/task/create_warehouse_tables.py",
+    #     conf=spark_conf,
+    #     jars=','.join(jar_list),
+    #     trigger_rule='none_failed',
+    # )
     
-    extract
+    create_raw_tables 
     
 create_iceberg_tables()

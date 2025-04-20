@@ -30,7 +30,7 @@ services:
       AWS_SECRET_ACCESS_KEY: minio123
       S3_ENDPOINT_URL: http://minio:9000
       S3_BUCKET: hive
-      S3_PREFIX: hive
+      S3_PREFIX: warehouse
     depends_on:
       - hive-metadata-postgres
     ports:

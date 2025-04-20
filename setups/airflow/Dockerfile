@@ -9,6 +9,11 @@ COPY ./variables_and_connections /init/variables_and_connections
 # Install Python dependencies
 RUN pip install --no-cache-dir -r /requirements.txt
 
+# prepare dbt virtual environment
+COPY dbt-requirements.txt ./
+RUN python -m virtualenv dbt_venv && source dbt_venv/bin/activate && \
+    pip install --no-cache-dir -r dbt-requirements.txt && deactivate
+
 # -------------------------
 # ☕ INSTALL JAVA (required for Spark & Hadoop)
 # -------------------------
