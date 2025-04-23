@@ -192,6 +192,7 @@ spark.sql("""
         updated_at TIMESTAMP
     )
     USING iceberg
+    PARTITIONED BY (month(updated_at))
 """)
 
 # -- dim_aircraft
