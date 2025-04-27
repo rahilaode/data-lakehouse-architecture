@@ -1,1 +1,0 @@
-select * from source_schema.ticket_flights;

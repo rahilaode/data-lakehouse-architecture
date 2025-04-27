@@ -135,7 +135,7 @@ spark.sql("""
 
 # -- dim_date
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.default.final_dim_date (
+    CREATE TABLE IF NOT EXISTS demo.default.dim_date (
         date_id INT,
         date_actual DATE,
         day_suffix STRING,
@@ -167,7 +167,7 @@ spark.sql("""
 
 # -- dim_time
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.default.final_dim_time (
+    CREATE TABLE IF NOT EXISTS demo.default.dim_time (
         time_id INT,
         time_actual STRING,
         hours_24 STRING,
@@ -182,7 +182,7 @@ spark.sql("""
 
 # -- dim_passenger
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.default.final_dim_passenger (
+    CREATE TABLE IF NOT EXISTS demo.default.dim_passenger (
         passenger_id STRING,
         passenger_nk STRING,
         passenger_name STRING,
@@ -197,10 +197,11 @@ spark.sql("""
 
 # -- dim_aircraft
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.default.final_dim_aircraft (
+    CREATE TABLE IF NOT EXISTS demo.default.dim_aircraft (
         aircraft_id STRING,
         aircraft_nk STRING,
-        model STRING,
+        model_en STRING,
+        model_ru STRING,
         range INT,
         created_at TIMESTAMP,
         updated_at TIMESTAMP
@@ -210,11 +211,13 @@ spark.sql("""
 
 # -- dim_airport
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.default.final_dim_airport (
+    CREATE TABLE IF NOT EXISTS demo.default.dim_airport (
         airport_id STRING,
         airport_nk STRING,
-        airport_name STRING,
-        city STRING,
+        airport_name_en STRING,
+        airport_name_ru STRING,
+        city_en STRING,
+        city_ru STRING,
         coordinates STRING,
         timezone STRING,
         created_at TIMESTAMP,
@@ -225,7 +228,7 @@ spark.sql("""
 
 # -- dim_seat
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.default.final_dim_seat (
+    CREATE TABLE IF NOT EXISTS demo.default.dim_seat (
         seat_id STRING,
         aircraft_id STRING,
         seat_no STRING,
@@ -238,7 +241,7 @@ spark.sql("""
 
 # -- fct_booking_ticket
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.default.final_fct_booking_ticket (
+    CREATE TABLE IF NOT EXISTS demo.default.fct_booking_ticket (
         booking_ticket_id STRING,
         book_nk STRING,
         ticket_no STRING,
@@ -280,7 +283,7 @@ spark.sql("""
 
 # -- fct_flight_activity
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.default.final_fct_flight_activity (
+    CREATE TABLE IF NOT EXISTS demo.default.fct_flight_activity (
         flight_activity_id STRING,
         flight_nk STRING,
         flight_no STRING,
@@ -315,7 +318,7 @@ spark.sql("""
 
 # -- fct_seat_occupied_daily
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.default.final_fct_seat_occupied_daily (
+    CREATE TABLE IF NOT EXISTS demo.default.fct_seat_occupied_daily (
         seat_occupied_daily_id STRING,
         date_flight INT,
         flight_nk STRING,
@@ -335,7 +338,7 @@ spark.sql("""
 
 # -- fct_boarding_pass
 spark.sql("""
-    CREATE TABLE IF NOT EXISTS demo.default.final_fct_boarding_pass (
+    CREATE TABLE IF NOT EXISTS demo.default.fct_boarding_pass (
         boarding_pass_id STRING,
         ticket_no STRING,
         book_ref STRING,

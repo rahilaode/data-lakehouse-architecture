@@ -1,1 +1,0 @@
-select * from source_schema.airports_data;
