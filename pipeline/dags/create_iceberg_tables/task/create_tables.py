@@ -365,5 +365,64 @@ spark.sql("""
     )
     USING iceberg
 """)
+
+# -- Tabel api_flights_data
+spark.sql("""
+    CREATE TABLE IF NOT EXISTS demo.default.api_flights_data (
+        flight_date DATE,
+        flight_status STRING,
+
+        departure_airport STRING,
+        departure_timezone STRING,
+        departure_iata STRING,
+        departure_icao STRING,
+        departure_terminal STRING,
+        departure_gate STRING,
+        departure_delay INT,
+        departure_scheduled TIMESTAMP,
+        departure_estimated TIMESTAMP,
+        departure_actual TIMESTAMP,
+        departure_estimated_runway TIMESTAMP,
+        departure_actual_runway TIMESTAMP,
+
+        arrival_airport STRING,
+        arrival_timezone STRING,
+        arrival_iata STRING,
+        arrival_icao STRING,
+        arrival_terminal STRING,
+        arrival_gate STRING,
+        arrival_baggage STRING,
+        arrival_delay INT,
+        arrival_scheduled TIMESTAMP,
+        arrival_estimated TIMESTAMP,
+        arrival_actual TIMESTAMP,
+        arrival_estimated_runway TIMESTAMP,
+        arrival_actual_runway TIMESTAMP,
+
+        airline_name STRING,
+        airline_iata STRING,
+        airline_icao STRING,
+
+        flight_number STRING,
+        flight_iata STRING,
+        flight_icao STRING,
+        
+        codeshare_airline_name STRING,
+        codeshare_airline_iata STRING,
+        codeshare_airline_icao STRING,
+        codeshare_flight_number STRING,
+        codeshare_flight_iata STRING,
+        codeshare_flight_icao STRING,
+
+        aircraft_code STRING,
+        live_data STRING,
+
+        created_at TIMESTAMP,
+        updated_at TIMESTAMP
+    )
+    USING iceberg
+    PARTITIONED BY (month(flight_date))
+""")
+
 # Tutup SparkSession
 spark.stop()

@@ -1,6 +1,6 @@
 import uuid
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, expr, current_timestamp,to_date, date_format, year, month, dayofmonth, dayofweek, dayofyear, weekofyear, quarter, trunc, when, concat_ws, lit, from_json
+from pyspark.sql.functions import col, expr, current_timestamp,lpad, when, concat_ws, from_json, lit
 from pyspark.sql.types import MapType, StringType, StructType, IntegerType
 from pyspark.sql import functions as F
 import datetime
@@ -194,4 +194,60 @@ dim_date.show()
 
 # 6. Write to Iceberg table
 dim_date.writeTo(f"demo.default.dim_date").overwritePartitions()
+
+
+# Dim time
+# Generate 0-1439 (menit dalam sehari)
+minutes = list(range(0, 24 * 60))  # 0..1439
+
+# Create DataFrame
+minutes_df = spark.createDataFrame([(i,) for i in minutes], ["minute_of_day"])
+
+# Build dim_time
+dim_time = minutes_df.withColumn(
+    "hours_24",
+    lpad(F.floor(col("minute_of_day") / 60).cast("string"), 2, "0")
+).withColumn(
+    "hours_12",
+    lpad(((F.floor(col("minute_of_day") / 60)) % 12).cast("string"), 2, "0")
+).withColumn(
+    "hour_minutes",
+    lpad((col("minute_of_day") % 60).cast("string"), 2, "0")
+).withColumn(
+    "time_actual",
+    concat_ws(":",
+        lpad(F.floor(col("minute_of_day") / 60).cast("string"), 2, "0"),
+        lpad((col("minute_of_day") % 60).cast("string"), 2, "0"),
+        lit("00")   # Detik diset "00"
+    )
+).withColumn(
+    "day_minutes",
+    col("minute_of_day")
+).withColumn(
+    "day_time_name",
+    when(col("minute_of_day") < 720, "AM").otherwise("PM")
+).withColumn(
+    "day_night",
+    when((col("minute_of_day") >= 420) & (col("minute_of_day") <= 1199), "Day")
+    .otherwise("Night")
+).withColumn(
+    "time_id",
+    (lpad(F.floor(col("minute_of_day") / 60).cast("string"), 2, "0") +
+     lpad((col("minute_of_day") % 60).cast("string"), 2, "0")).cast(IntegerType())
+).select(
+    "time_id",
+    "time_actual",
+    "hours_24",
+    "hours_12",
+    "hour_minutes",
+    "day_minutes",
+    "day_time_name",
+    "day_night"
+)
+
+# Show
+dim_time.show()
+
+# Write
+dim_time.writeTo(f"demo.default.dim_time").overwritePartitions()
 spark.stop()

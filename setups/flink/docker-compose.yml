@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  flink-jobmanager:
+    image: flink_customs
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: flink-jobmanager
+    hostname: flink-jobmanager
+    ports:
+      - "8088:8081"  # Flink UI
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+    command: jobmanager
+    networks:
+      - riset-lakehouse-networks
+    volumes:
+      - ./usr_jobs:/opt/flink/jobs
+
+  flink-taskmanager:
+    image: flink_customs
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: flink-taskmanager
+    hostname: flink-taskmanager
+    depends_on:
+      - flink-jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+    command: taskmanager
+    networks:
+      - riset-lakehouse-networks
+    volumes:
+      - ./usr_jobs:/opt/flink/jobs
+
+networks:
+  riset-lakehouse-networks:
+    external: True
