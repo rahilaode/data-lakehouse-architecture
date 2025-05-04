@@ -2,15 +2,17 @@ version: '3.8'
 services:
   flink-jobmanager:
     image: flink_customs
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     container_name: flink-jobmanager
     hostname: flink-jobmanager
     ports:
-      - "8088:8081"  # Flink UI
+      - "8088:8081"
     environment:
       - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+      - AWS_ACCESS_KEY_ID=minio
+      - AWS_SECRET_ACCESS_KEY=minio123
     command: jobmanager
     networks:
       - riset-lakehouse-networks
@@ -19,7 +21,7 @@ services:
 
   flink-taskmanager:
     image: flink_customs
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     container_name: flink-taskmanager
@@ -28,6 +30,8 @@ services:
       - flink-jobmanager
     environment:
       - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+      - AWS_ACCESS_KEY_ID=minio
+      - AWS_SECRET_ACCESS_KEY=minio123
     command: taskmanager
     networks:
       - riset-lakehouse-networks
@@ -36,4 +40,4 @@ services:
 
 networks:
   riset-lakehouse-networks:
-    external: True
+    external: true

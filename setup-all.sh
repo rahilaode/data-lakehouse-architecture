@@ -24,3 +24,11 @@ docker exec -it airflow-webserver airflow connections import /init/variables_and
 # Start Trino
 docker compose -f ./setups/trino/docker-compose.yml down -v
 docker compose -f ./setups/trino/docker-compose.yml up --build --detach
+
+# Start Kafka
+docker compose -f ./setups/kafka/docker-compose.yml down -v
+docker compose -f ./setups/kafka/docker-compose.yml up --build --detach
+
+# Start Flink
+docker compose -f ./setups/flink/docker-compose.yml down -v
+docker compose -f ./setups/flink/docker-compose.yml up --build --detach
