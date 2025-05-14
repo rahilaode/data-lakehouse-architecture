@@ -16,12 +16,12 @@ def extract_load(table_name, incremental, date):
             .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions") \
             .config("spark.sql.catalog.demo", "org.apache.iceberg.spark.SparkCatalog") \
             .config("spark.sql.catalog.demo.type", "hive") \
-            .config("spark.sql.catalog.demo.uri", "thrift://hive-metastore:9083") \
+            .config("spark.sql.catalog.demo.uri", "thrift://34.227.82.131:9083") \
             .config("spark.sql.catalog.demo.warehouse", "s3a://hive/warehouse/") \
             .config("spark.hadoop.fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider") \
             .config("spark.hadoop.fs.s3a.access.key", AWS_ACCESS_KEY_ID) \
             .config("spark.hadoop.fs.s3a.secret.key", AWS_SECRET_ACCESS_KEY) \
-            .config("spark.hadoop.fs.s3a.endpoint", "http://minio:9000") \
+            .config("spark.hadoop.fs.s3a.endpoint", "http://34.227.82.131:9000") \
             .config("spark.hadoop.fs.s3a.path.style.access", "true") \
             .getOrCreate()
 

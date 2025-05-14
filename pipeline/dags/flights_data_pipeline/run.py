@@ -20,7 +20,7 @@ spark_conf = {
     'spark.jars.packages': 'org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.4.3',
     'spark.hadoop.fs.s3a.access.key': 'minio',
     'spark.hadoop.fs.s3a.secret.key': 'minio123',
-    'spark.hadoop.fs.s3a.endpoint': 'http://minio:9000',
+    'spark.hadoop.fs.s3a.endpoint': 'http://34.227.82.131:9000',
     'spark.hadoop.fs.s3a.path.style.access': 'true',
     'spark.hadoop.fs.s3a.impl': 'org.apache.hadoop.fs.s3a.S3AFileSystem',
     'spark.dynamicAllocation.enabled': 'true',
