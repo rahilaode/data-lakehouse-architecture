@@ -60,5 +60,8 @@ RUN echo "-> Install JARs: Hadoop" && \
     curl https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-mapreduce-client-core/3.3.4/hadoop-mapreduce-client-core-3.3.4.jar -O  && \
     popd
 
+# Copy usr jobs
+COPY ./usr_jobs/kafka-to-iceberg.sql ./usr_jobs/kafka-to-iceberg.sql
+
 # Set the launch command
 CMD ./bin/start-cluster.sh && sleep infinity

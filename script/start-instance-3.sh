@@ -12,3 +12,8 @@ docker compose -f ~/drskl-research/setups/flink/docker-compose.yml up --build --
 # Start data source
 docker compose -f ~/drskl-research/setups/data_sources/stream/docker-compose.yml down -v
 docker compose -f ~/drskl-research/setups/data_sources/stream/docker-compose.yml up --build --detach
+
+sleep 10
+
+# Submit flink job
+docker compose exec -it jobmanager bash -c "./bin/sql-client.sh -f ./usr_jobs/kafka-to-iceberg.sql" 
