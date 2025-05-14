@@ -9,10 +9,10 @@ services:
     hostname: flink-jobmanager
     ports:
       - "8088:8081"
-    environment:
-      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
-      - AWS_ACCESS_KEY_ID=minio
-      - AWS_SECRET_ACCESS_KEY=minio123
+    # environment:
+    #   - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+    #   - AWS_ACCESS_KEY_ID=minio
+    #   - AWS_SECRET_ACCESS_KEY=minio123
     command: jobmanager
     networks:
       - riset-lakehouse-networks
@@ -28,10 +28,10 @@ services:
     hostname: flink-taskmanager
     depends_on:
       - flink-jobmanager
-    environment:
-      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
-      - AWS_ACCESS_KEY_ID=minio
-      - AWS_SECRET_ACCESS_KEY=minio123
+    # environment:
+    #   - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+    #   - AWS_ACCESS_KEY_ID=minio
+    #   - AWS_SECRET_ACCESS_KEY=minio123    
     command: taskmanager
     networks:
       - riset-lakehouse-networks

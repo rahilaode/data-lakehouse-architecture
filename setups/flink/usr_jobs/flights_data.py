@@ -16,16 +16,16 @@ def main():
             'catalog-type'='hive',
             'warehouse'='s3a://hive/warehouse',
             'hive-conf-dir' = './conf'
-        )
+        );
     """)
     print("Success create Iceberg catalog...")
 
     # 3. Create Kafka source table in default_catalog
     print("Switch to default_catalog for Kafka source...")
-    table_env.execute_sql("USE CATALOG `default_catalog`")
+    table_env.execute_sql("USE CATALOG `iceberg_catalog`")
 
     table_env.execute_sql("""
-        CREATE TABLE IF NOT EXISTS flights_kafka (
+        CREATE TABLE flights_kafka (
             flight_date STRING,
             flight_status STRING,
 
@@ -76,12 +76,12 @@ def main():
             live STRING
         ) WITH (
             'connector' = 'kafka',
-            'topic' = 'flights-data',
-            'properties.bootstrap.servers' = 'kafka1:9092',
+            'topic' = 'flights_data',
+            'properties.bootstrap.servers' = 'kafka1:9092;kafka2:9093;kafka3:9094',
             'properties.group.id' = 'flights-consumer',
             'format' = 'json',
             'scan.startup.mode' = 'earliest-offset'
-        )
+        );
     """)
 
     # 4. Create Iceberg schema 'testing' and target table
