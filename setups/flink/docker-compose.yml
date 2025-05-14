@@ -1,38 +1,41 @@
 version: '3.8'
 services:
-  flink-jobmanager:
+  jobmanager:
     image: flink_customs
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: flink-jobmanager
-    hostname: flink-jobmanager
+    container_name: jobmanager
+    command: jobmanager
+    hostname: jobmanager
     ports:
       - "8088:8081"
-    # environment:
-    #   - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
-    #   - AWS_ACCESS_KEY_ID=minio
-    #   - AWS_SECRET_ACCESS_KEY=minio123
-    command: jobmanager
+    environment:
+    - |
+      FLINK_PROPERTIES=
+      jobmanager.rpc.address: jobmanager
+      rest.flamegraph.enabled: true
     networks:
       - riset-lakehouse-networks
     volumes:
       - ./usr_jobs:/opt/flink/jobs
 
-  flink-taskmanager:
+  taskmanager:
     image: flink_customs
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: flink-taskmanager
-    hostname: flink-taskmanager
+    hostname: taskmanager
     depends_on:
-      - flink-jobmanager
-    # environment:
-    #   - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
-    #   - AWS_ACCESS_KEY_ID=minio
-    #   - AWS_SECRET_ACCESS_KEY=minio123    
+      - jobmanager
     command: taskmanager
+    deploy:
+      replicas: 2
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.numberOfTaskSlots: 4
     networks:
       - riset-lakehouse-networks
     volumes:

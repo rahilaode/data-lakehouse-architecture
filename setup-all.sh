@@ -6,20 +6,20 @@ docker compose -f ./setups/data_sources/flights_db/docker-compose.yml up --build
 docker compose -f ./setups/minio/docker-compose.yml down -v
 docker compose -f ./setups/minio/docker-compose.yml up --build --detach
 
-# # Start spark
-# docker compose -f ./setups/spark/docker-compose.yml down -v
-# docker compose 1-f ./setups/spark/docker-compose.yml up --build --detach
+# Start spark
+docker compose -f ./setups/spark/docker-compose.yml down -v
+docker compose -f ./setups/spark/docker-compose.yml up --build --detach
 
 # Hive metastore
 docker compose -f ./setups/hive_metastore/docker-compose.yml down -v
 docker compose -f ./setups/hive_metastore/docker-compose.yml up --build --detach
     
-# # Start airflow
-# docker compose -f ./setups/airflow/docker-compose.yml down -v
-# docker compose -f ./setups/airflow/docker-compose.yml up --build --detach
+# Start airflow
+docker compose -f ./setups/airflow/docker-compose.yml down -v
+docker compose -f ./setups/airflow/docker-compose.yml up --build --detach
 
-# # Insert variables
-# docker exec -it airflow-webserver airflow connections import /init/variables_and_connections/airflow_connections_init.yaml
+# Insert variables
+docker exec -it airflow-webserver airflow connections import /init/variables_and_connections/airflow_connections_init.yaml
 
 # Start Trino
 docker compose -f ./setups/trino/docker-compose.yml down -v
