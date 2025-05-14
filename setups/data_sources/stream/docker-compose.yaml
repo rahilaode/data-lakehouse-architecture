@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+
+  weather-data-generator:
+    build:
+      context: .
+    image: weather-data-generator
+    container_name: weather-data-generator
+    restart: always
+    environment:
+      KAFKA_BROKER_1: 'kafka1:9092'
+      KAFKA_BROKER_2: 'kafka2:9093'
+      KAFKA_BROKER_3: 'kafka3:9094'
+      KAFKA_TOPIC: weather-api-data
+    networks:
+      - riset-lakehouse-networks
+
+networks:
+  riset-lakehouse-networks:
+    external: true

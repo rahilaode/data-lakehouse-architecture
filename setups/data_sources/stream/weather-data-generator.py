@@ -4,10 +4,17 @@ import json
 import time
 from datetime import datetime
 from kafka import KafkaProducer
+import os
+
+# Import environment variables
+KAFKA_TOPIC = os.environ.get('KAFKA_TOPIC')
+KAFKA_BROKER_1 = os.environ.get('KAFKA_BROKER_1')
+KAFKA_BROKER_2 = os.environ.get('KAFKA_BROKER_2')
+KAFKA_BROKER_3 = os.environ.get('KAFKA_BROKER_3')
 
 # Kafka
 KAFKA_TOPIC = 'weather-api-data'
-KAFKA_BOOTSTRAP_SERVERS = ["localhost:29092", "localhost:29093", "localhost:29094"]  
+KAFKA_BOOTSTRAP_SERVERS = [KAFKA_BROKER_1, KAFKA_BROKER_2, KAFKA_BROKER_3]  
 
 # Airport list
 airport_names = [

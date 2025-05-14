@@ -25,7 +25,7 @@ CREATE TABLE weathers_data
   'catalog-type'='hive',
   'catalog-name'='dev',
   'warehouse' = 's3a://warehouse',
-  'hive-conf-dir' = '../conf')
+  'hive-conf-dir' = './conf')
   AS 
   SELECT 
     `timestamp`,
