@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   flights_db:
-    image: postgres:13 
+    image: rahilwisdom/flights-database:latest
     container_name: flights_db
     ports:
       - 5433:5432
@@ -12,14 +12,12 @@ services:
     command: ["postgres", "-c", "wal_level=logical"]
     volumes:
       - flights_db_volume:/var/lib/postgresql/data
-      - ./data/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - riset-lakehouse-networks
 
 networks:
   riset-lakehouse-networks:
-    name: riset-lakehouse-networks
-    driver: bridge
+    external: True
 
 volumes:
   flights_db_volume:

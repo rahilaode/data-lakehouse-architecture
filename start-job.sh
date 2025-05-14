@@ -1,1 +1,0 @@
-docker exec -it flink-jobmanager flink run -py /opt/flink/jobs/flights_data.py

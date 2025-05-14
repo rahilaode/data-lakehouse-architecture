@@ -1,0 +1,14 @@
+# Create networks
+docker network create riset-lakehouse-networks
+
+# Start data storage (minio)
+docker compose -f ~/drskl-research/setups/minio/docker-compose.yml down -v
+docker compose -f ~/drskl-research/setups/minio/docker-compose.yml up --build --detach
+
+# Hive metastore
+docker compose -f ~/drskl-research/setups/hive_metastore/docker-compose.yml down -v
+docker compose -f ~/drskl-research/setups/hive_metastore/docker-compose.yml up --build --detach
+
+# Start Trino
+docker compose -f ~/drskl-research/setups/trino/docker-compose.yml down -v
+docker compose -f ~/drskl-research/setups/trino/docker-compose.yml up --build --detach
