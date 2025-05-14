@@ -16,4 +16,4 @@ docker compose -f ~/drskl-research/setups/data_sources/stream/docker-compose.yml
 sleep 10
 
 # Submit flink job
-docker compose exec -it jobmanager bash -c "./bin/sql-client.sh -f ./usr_jobs/kafka-to-iceberg.sql" 
+docker exec -it jobmanager bash -c "/opt/flink/bin/sql-client.sh -f /opt/flink/usr_jobs/kafka-to-iceberg.sql" 
