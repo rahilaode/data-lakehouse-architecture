@@ -12,8 +12,8 @@ services:
       POSTGRES_PASSWORD: hive
     ports:
       - "5434:5432"
-    # volumes:
-    #   - hive-metadata-postgres-volumes:/var/lib/postgresql/data
+    volumes:
+      - hive-metadata-postgres-volumes:/var/lib/postgresql/data
     networks:
       - riset-lakehouse-networks
 
