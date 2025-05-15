@@ -2,10 +2,11 @@ from airflow.decorators import task_group, dag
 from airflow.models import Variable
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
 from airflow.utils.dates import days_ago
-from datetime import datetime
+from airflow.models.variable import Variable
 
 # Constants
 DATE = '{{ ds }}'
+LAKEHOUSE_IP = Variable.get('LAKEHOUSE_IP')
 
 # Define the list of JAR files required for Spark
 jar_list = [
@@ -20,7 +21,7 @@ spark_conf = {
     'spark.jars.packages': 'org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.4.3',
     'spark.hadoop.fs.s3a.access.key': 'minio',
     'spark.hadoop.fs.s3a.secret.key': 'minio123',
-    'spark.hadoop.fs.s3a.endpoint': 'http://34.227.82.131:9000',
+    'spark.hadoop.fs.s3a.endpoint': f'http://{LAKEHOUSE_IP}:9000',
     'spark.hadoop.fs.s3a.path.style.access': 'true',
     'spark.hadoop.fs.s3a.impl': 'org.apache.hadoop.fs.s3a.S3AFileSystem',
     'spark.dynamicAllocation.enabled': 'true',
@@ -68,7 +69,8 @@ def flights_data_pipeline():
                 application_args=[
                     f"{table_name}",
                     f"{incremental}",
-                    f"{DATE}"
+                    f"{DATE}",
+                    f"{LAKEHOUSE_IP}"
                 ]
             )
             # Set task dependencies
@@ -87,6 +89,9 @@ def flights_data_pipeline():
             conf=spark_conf,
             jars=','.join(jar_list),
             trigger_rule='none_failed',
+            application_args=[
+                f"{LAKEHOUSE_IP}"
+            ]
         )
 
     extract_load() >> transform()

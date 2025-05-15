@@ -13,5 +13,6 @@ docker compose -f ~/drskl-research/setups/spark/docker-compose.yml up --build --
 docker compose -f ~/drskl-research/setups/airflow/docker-compose.yml down -v
 docker compose -f ~/drskl-research/setups/airflow/docker-compose.yml up --build --detach
 
-# Insert variables
+# Insert connection & variables
 docker exec -it airflow-webserver airflow connections import /init/variables_and_connections/airflow_connections_init.yaml
+docker exec -it airflow-webserver airflow variables import -a overwrite /init/variables_and_connections/airflow_variables_init.json

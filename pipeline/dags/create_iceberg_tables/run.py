@@ -11,12 +11,15 @@ jar_list = [
     '/opt/spark/jars/iceberg-spark-runtime-3.5_2.12-1.4.3.jar'
 ]
 
+# Import variables
+LAKEHOUSE_IP = Variable.get('LAKEHOUSE_IP')
+
 # Define Spark configuration
 spark_conf = {
     'spark.jars.packages': 'org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.4.3',
     'spark.hadoop.fs.s3a.access.key': 'minio',
     'spark.hadoop.fs.s3a.secret.key': 'minio123',
-    'spark.hadoop.fs.s3a.endpoint': 'http://34.227.82.131:9000',
+    'spark.hadoop.fs.s3a.endpoint': f'http://{LAKEHOUSE_IP}:9000',
     'spark.hadoop.fs.s3a.path.style.access': 'true',
     'spark.hadoop.fs.s3a.impl': 'org.apache.hadoop.fs.s3a.S3AFileSystem',
     'spark.dynamicAllocation.enabled': 'true',
@@ -42,6 +45,9 @@ def create_iceberg_tables():
         conf=spark_conf,
         jars=','.join(jar_list),
         trigger_rule='none_failed',
+        application_args=[
+            f"{LAKEHOUSE_IP}"
+        ]
     )
 
     # create_warehouse_tables = SparkSubmitOperator(
