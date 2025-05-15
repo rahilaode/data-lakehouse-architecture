@@ -15,6 +15,7 @@ services:
       FLINK_PROPERTIES=
       jobmanager.rpc.address: jobmanager
       rest.flamegraph.enabled: true
+    - LAKEHOUSE_IP=54.161.85.114
     networks:
       - riset-lakehouse-networks
     volumes:
@@ -36,6 +37,7 @@ services:
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager
         taskmanager.numberOfTaskSlots: 4
+      - LAKEHOUSE_IP=54.161.85.114
     networks:
       - riset-lakehouse-networks
     volumes:
