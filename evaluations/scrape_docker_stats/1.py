@@ -71,7 +71,7 @@ if __name__ == "__main__":
             df = pd.DataFrame(data)
             df.to_csv("docker_stats.csv", mode='a', header=not pd.io.common.file_exists("docker_stats.csv"), index=False)
 
-            time.sleep(1)
+            time.sleep(5)
 
     except KeyboardInterrupt:
         print("Scraping dihentikan.")
