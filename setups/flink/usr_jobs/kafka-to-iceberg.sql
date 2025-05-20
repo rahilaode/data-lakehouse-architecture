@@ -10,7 +10,7 @@ CREATE TABLE t_kafka_weathers_api(
   ) WITH (
     'connector' = 'kafka',
     'topic' = 'weather-api-data',
-    'properties.bootstrap.servers' = 'kafka1:9092;kafka2:9093;kafka3:9094',
+    'properties.bootstrap.servers' = 'kafka1:9092',
     'scan.startup.mode' = 'earliest-offset',
     'format' = 'json'
   );

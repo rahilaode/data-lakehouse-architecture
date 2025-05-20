@@ -22,13 +22,13 @@ spark_conf = {
     'spark.hadoop.fs.s3a.endpoint': f'http://{LAKEHOUSE_IP}:9000',
     'spark.hadoop.fs.s3a.path.style.access': 'true',
     'spark.hadoop.fs.s3a.impl': 'org.apache.hadoop.fs.s3a.S3AFileSystem',
-    'spark.dynamicAllocation.enabled': 'true',
-    'spark.dynamicAllocation.maxExecutors': '3',
-    'spark.dynamicAllocation.minExecutors': '1',
-    'spark.dynamicAllocation.initialExecutors': '1',
-    'spark.executor.memory': '4g',  # Define RAM per executor
-    'spark.executor.cores': '2',  # Define cores per executor
-    'spark.scheduler.mode': 'FAIR'
+    # 'spark.dynamicAllocation.enabled': 'true',
+    # 'spark.dynamicAllocation.maxExecutors': '3',
+    # 'spark.dynamicAllocation.minExecutors': '1',
+    # 'spark.dynamicAllocation.initialExecutors': '1',
+    # 'spark.executor.memory': '4g',  # Define RAM per executor
+    # 'spark.executor.cores': '2',  # Define cores per executor
+    # 'spark.scheduler.mode': 'FAIR'
 }
 
 @dag(
