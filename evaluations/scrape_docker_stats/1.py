@@ -63,9 +63,9 @@ if __name__ == "__main__":
         while True:
             data = collect_all_stats()
 
-            # Tampilkan ke terminal
-            for row in data:
-                print(row)
+            # # Tampilkan ke terminal
+            # for row in data:
+            #     print(row)
 
             # Simpan ke CSV (append)
             df = pd.DataFrame(data)
