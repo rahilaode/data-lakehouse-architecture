@@ -35,3 +35,12 @@ docker compose -f ./setups/kafka/docker-compose.yml up --build --detach
 # Start Flink
 docker compose -f ./setups/flink/docker-compose.yml down -v
 docker compose -f ./setups/flink/docker-compose.yml up --build --detach
+
+# Start streaming data source
+docker compose -f ./setups/data_sources/stream/docker-compose.yml down -v
+docker compose -f ./setups/data_sources/stream/docker-compose.yml up --build --detach
+
+sleep 10
+
+# Submit flink job
+docker exec -it jobmanager bash -c "/opt/flink/bin/sql-client.sh -f /opt/flink/usr_jobs/kafka-to-iceberg.sql" 

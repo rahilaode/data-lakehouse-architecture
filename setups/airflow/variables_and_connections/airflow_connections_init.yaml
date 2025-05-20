@@ -19,7 +19,7 @@ spark-conn:
 s3-conn:
   conn_type: aws
   description: Koneksi ke minio / s3 (data lake)
-  extra: '{"endpoint_url": "http://184.73.56.193:9000"}'
+  extra: '{"endpoint_url": "http://3.89.200.252:9000"}'
   host: ''
   login: minio
   password: minio123

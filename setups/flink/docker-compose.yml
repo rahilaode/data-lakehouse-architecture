@@ -29,8 +29,6 @@ services:
     depends_on:
       - jobmanager
     command: taskmanager
-    deploy:
-      replicas: 2
     environment:
       - |
         FLINK_PROPERTIES=

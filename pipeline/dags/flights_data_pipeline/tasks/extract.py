@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from airflow.exceptions import AirflowException
 import sys
+import time
 
 BASE_PATH = "/opt/airflow/dags"
 AWS_ACCESS_KEY_ID = "minio"
@@ -41,13 +42,16 @@ def extract_load(table_name, incremental, date, lakehouse_ip):
             }
         )
         
+        # Measure time spark write to iceberg tables
+        start = time.time()
         df.writeTo(f"demo.default.{table_name}").overwritePartitions()
+        end = time.time()
+        print(f"Write durations for {table_name} table: {end - start} seconds")
 
         spark.stop()
 
     except Exception as e:
         raise AirflowException(f"Error when extracting {table_name}: {str(e)}")
-
 
 if __name__ == "__main__":
     """
@@ -56,7 +60,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 5:
         sys.exit(-1)
 
-    table_name = sys.argv[1]    
+    table_name = sys.argv[1]
     incremental = sys.argv[2].lower() == 'true'
     date = sys.argv[3]
     lakehouse_ip = sys.argv[4]
