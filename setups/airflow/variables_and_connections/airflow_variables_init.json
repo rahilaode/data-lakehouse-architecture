@@ -1,5 +1,5 @@
 {
-    "HIVE_METASTORE_IP": "3.87.19.243",
-    "MINIO_IP": "3.87.19.243",
+    "HIVE_METASTORE_IP": "54.161.166.220",
+    "MINIO_IP": "54.161.166.220",
     "LIMIT_DATA": "1000"
 }
