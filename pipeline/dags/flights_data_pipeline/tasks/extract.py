@@ -7,9 +7,10 @@ BASE_PATH = "/opt/airflow/dags"
 AWS_ACCESS_KEY_ID = "minio"
 AWS_SECRET_ACCESS_KEY = "minio123"
 
-def extract_load(table_name, incremental, date, lakehouse_ip):
+def extract_load(table_name, incremental, date, minio_ip, hive_metastore_ip):
     try:
-        LAKEHOUSE_IP = lakehouse_ip
+        MINIO_IP = minio_ip
+        HIVE_METASTORE_IP = hive_metastore_ip
         # Initialize Spark session
         spark = SparkSession.builder \
             .appName(f"Insert to Iceberg - {table_name}") \
@@ -18,12 +19,12 @@ def extract_load(table_name, incremental, date, lakehouse_ip):
             .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions") \
             .config("spark.sql.catalog.demo", "org.apache.iceberg.spark.SparkCatalog") \
             .config("spark.sql.catalog.demo.type", "hive") \
-            .config("spark.sql.catalog.demo.uri", f"thrift://{LAKEHOUSE_IP}:9083") \
+            .config("spark.sql.catalog.demo.uri", f"thrift://{HIVE_METASTORE_IP}:9083") \
             .config("spark.sql.catalog.demo.warehouse", "s3a://hive/warehouse/") \
             .config("spark.hadoop.fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider") \
             .config("spark.hadoop.fs.s3a.access.key", AWS_ACCESS_KEY_ID) \
             .config("spark.hadoop.fs.s3a.secret.key", AWS_SECRET_ACCESS_KEY) \
-            .config("spark.hadoop.fs.s3a.endpoint", f"http://{LAKEHOUSE_IP}:9000") \
+            .config("spark.hadoop.fs.s3a.endpoint", f"http://{MINIO_IP}:9000") \
             .config("spark.hadoop.fs.s3a.path.style.access", "true") \
             .getOrCreate()
 
@@ -46,7 +47,7 @@ def extract_load(table_name, incremental, date, lakehouse_ip):
         start = time.time()
         df.writeTo(f"demo.default.{table_name}").overwritePartitions()
         end = time.time()
-        print(f"Write durations for {table_name} table: {end - start} seconds")
+        print(f"Write durations for {table_name} table in landing zone: {end - start} seconds")
 
         spark.stop()
 
@@ -57,12 +58,13 @@ if __name__ == "__main__":
     """
     Main entry point for the script. Extracts data from Flights database based on command line arguments.
     """
-    if len(sys.argv) != 5:
+    if len(sys.argv) != 6:
         sys.exit(-1)
 
     table_name = sys.argv[1]
     incremental = sys.argv[2].lower() == 'true'
     date = sys.argv[3]
-    lakehouse_ip = sys.argv[4]
+    minio_ip = sys.argv[4]
+    hive_metastore_ip = sys.argv[5]
 
-    extract_load(table_name, incremental, date, lakehouse_ip)
+    extract_load(table_name, incremental, date, minio_ip, hive_metastore_ip)

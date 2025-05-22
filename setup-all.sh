@@ -21,8 +21,9 @@ docker compose -f ./setups/hive_metastore/docker-compose.yml up --build --detach
 docker compose -f ./setups/airflow/docker-compose.yml down -v
 docker compose -f ./setups/airflow/docker-compose.yml up --build --detach
 
-# Insert variables
+# Insert connection & variables
 docker exec -it airflow-webserver airflow connections import /init/variables_and_connections/airflow_connections_init.yaml
+docker exec -it airflow-webserver airflow variables import /init/variables_and_connections/airflow_variables_init.json
 
 # Start Trino
 docker compose -f ./setups/trino/docker-compose.yml down -v
@@ -43,4 +44,4 @@ docker compose -f ./setups/data_sources/stream/docker-compose.yml up --build --d
 sleep 10
 
 # Submit flink job
-docker exec -it jobmanager bash -c "/opt/flink/bin/sql-client.sh -f /opt/flink/usr_jobs/kafka-to-iceberg.sql" 
+# docker exec -it jobmanager bash -c "/opt/flink/bin/sql-client.sh -f /opt/flink/usr_jobs/kafka-to-iceberg.sql" 

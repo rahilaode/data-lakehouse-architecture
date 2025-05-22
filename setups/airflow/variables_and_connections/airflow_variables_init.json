@@ -1,3 +1,4 @@
 {
-    "LAKEHOUSE_IP": "3.89.200.252"
+    "HIVE_METASTORE_IP": "hive-metastore",
+    "MINIO_IP": "minio"
 }

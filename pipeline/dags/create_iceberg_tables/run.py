@@ -12,14 +12,15 @@ jar_list = [
 ]
 
 # Import variables
-LAKEHOUSE_IP = Variable.get('LAKEHOUSE_IP')
+MINIO_IP = Variable.get('MINIO_IP')
+HIVE_METASTORE_IP = Variable.get('HIVE_METASTORE_IP')
 
 # Define Spark configuration
 spark_conf = {
     'spark.jars.packages': 'org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.4.3',
     'spark.hadoop.fs.s3a.access.key': 'minio',
     'spark.hadoop.fs.s3a.secret.key': 'minio123',
-    'spark.hadoop.fs.s3a.endpoint': f'http://{LAKEHOUSE_IP}:9000',
+    'spark.hadoop.fs.s3a.endpoint': f'http://{MINIO_IP}:9000',
     'spark.hadoop.fs.s3a.path.style.access': 'true',
     'spark.hadoop.fs.s3a.impl': 'org.apache.hadoop.fs.s3a.S3AFileSystem',
     # 'spark.dynamicAllocation.enabled': 'true',
@@ -46,7 +47,8 @@ def create_iceberg_tables():
         jars=','.join(jar_list),
         trigger_rule='none_failed',
         application_args=[
-            f"{LAKEHOUSE_IP}"
+            f"{MINIO_IP}",
+            f"{HIVE_METASTORE_IP}"
         ]
     )
 
