@@ -23,7 +23,7 @@ services:
       timeout: 5s
       retries: 5
   metabase-metadata:
-    image: postgres:latest
+    image: rahilwisdom/metabase-metadata
     container_name: metabase-metadata
     hostname: metabase-metadata
     environment:

@@ -1,4 +1,5 @@
 {
-    "HIVE_METASTORE_IP": "hive-metastore",
-    "MINIO_IP": "minio"
+    "HIVE_METASTORE_IP": "3.87.19.243",
+    "MINIO_IP": "3.87.19.243",
+    "LIMIT_DATA": "1000"
 }

@@ -7,10 +7,11 @@ BASE_PATH = "/opt/airflow/dags"
 AWS_ACCESS_KEY_ID = "minio"
 AWS_SECRET_ACCESS_KEY = "minio123"
 
-def extract_load(table_name, incremental, date, minio_ip, hive_metastore_ip):
+def extract_load(table_name, incremental, date, minio_ip, hive_metastore_ip, limit_data):
     try:
         MINIO_IP = minio_ip
         HIVE_METASTORE_IP = hive_metastore_ip
+        LIMIT_DATA = int(limit_data)
         # Initialize Spark session
         spark = SparkSession.builder \
             .appName(f"Insert to Iceberg - {table_name}") \
@@ -31,7 +32,7 @@ def extract_load(table_name, incremental, date, minio_ip, hive_metastore_ip):
         if incremental:
             query = f"(SELECT * FROM bookings.{table_name} WHERE updated_at::DATE = '{date}'::DATE - INTERVAL '1 DAY')) as data"
         else:
-            query = f"(SELECT * FROM bookings.{table_name}) as data"
+            query = f"(SELECT * FROM bookings.{table_name}) as data "
 
         df = spark.read.jdbc(
             url="jdbc:postgresql://flights_db:5432/demo",
@@ -43,6 +44,7 @@ def extract_load(table_name, incremental, date, minio_ip, hive_metastore_ip):
             }
         )
         
+        df = df.limit(LIMIT_DATA)
         # Measure time spark write to iceberg tables
         start = time.time()
         df.writeTo(f"demo.default.{table_name}").overwritePartitions()
@@ -58,7 +60,7 @@ if __name__ == "__main__":
     """
     Main entry point for the script. Extracts data from Flights database based on command line arguments.
     """
-    if len(sys.argv) != 6:
+    if len(sys.argv) != 7:
         sys.exit(-1)
 
     table_name = sys.argv[1]
@@ -66,5 +68,6 @@ if __name__ == "__main__":
     date = sys.argv[3]
     minio_ip = sys.argv[4]
     hive_metastore_ip = sys.argv[5]
+    limit_data = sys.argv[6]
 
-    extract_load(table_name, incremental, date, minio_ip, hive_metastore_ip)
+    extract_load(table_name, incremental, date, minio_ip, hive_metastore_ip, limit_data)

@@ -29,7 +29,6 @@ def transform(minio_ip, hive_metastore_ip):
         .getOrCreate()
 
     # reduce noise
-    spark.sparkContext.setLogLevel("WARN")
     start = time.time()
     ticket_flights = spark.read.table("demo.default.ticket_flights")
     end = time.time()
@@ -37,7 +36,7 @@ def transform(minio_ip, hive_metastore_ip):
 
     print("-->>>> START TRANSFORM <<<<--")
     start = time.time()
-    print(ticket_flights.show())
+    print(ticket_flights.printSchema())
     end = time.time()
     print(f"Read durations for ticket_flights table: {end - start} seconds")
     
@@ -45,7 +44,8 @@ def transform(minio_ip, hive_metastore_ip):
     ticket_flights.writeTo(f"demo.default.ticket_flights_transformed").overwritePartitions()
     end = time.time()
     print(f"Write durations for ticket_flights table to curated zone: {end - start} seconds")
-        
+    
+
     # aircrafts = spark.read.table("demo.default.aircrafts_data")
     # airports = spark.read.table("demo.default.airports_data")
     # tickets = spark.read.table("demo.default.tickets")

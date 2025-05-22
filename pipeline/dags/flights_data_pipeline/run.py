@@ -8,6 +8,7 @@ from airflow.models.variable import Variable
 DATE = '{{ ds }}'
 MINIO_IP = Variable.get('MINIO_IP')
 HIVE_METASTORE_IP = Variable.get('HIVE_METASTORE_IP')
+LIMIT_DATA = Variable.get('LIMIT_DATA')
 
 
 # Define the list of JAR files required for Spark
@@ -77,7 +78,8 @@ def flights_data_pipeline():
                     f"{incremental}",
                     f"{DATE}",
                     f"{MINIO_IP}",
-                    f"{HIVE_METASTORE_IP}"
+                    f"{HIVE_METASTORE_IP}",
+                    f"{LIMIT_DATA}"
                 ]
             )
             # Set task dependencies

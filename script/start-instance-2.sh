@@ -13,6 +13,10 @@ docker compose -f ~/drskl-research/setups/hive_metastore/docker-compose.yml up -
 docker compose -f ~/drskl-research/setups/trino/docker-compose.yml down -v
 docker compose -f ~/drskl-research/setups/trino/docker-compose.yml up --build --detach
 
+# Start Metabase
+# docker compose -f ~/drskl-research/setups/metabase/docker-compose.yaml down -v
+# docker compose -f ~/drskl-research/setups/metabase/docker-compose.yaml up --build --detach
+
 # Delete if monitoring data exists
 sudo rm ~/drskl-research/docker_stats.csv
 
