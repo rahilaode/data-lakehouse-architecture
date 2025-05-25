@@ -31,9 +31,9 @@ spark_conf = {
     # 'spark.dynamicAllocation.maxExecutors': '3',
     # 'spark.dynamicAllocation.minExecutors': '1',
     # 'spark.dynamicAllocation.initialExecutors': '1',
-    # 'spark.executor.memory': '4g',  
-    # 'spark.executor.cores': '4',     
-    # 'spark.driver.memory': '4g',    
+    'spark.executor.memory': '4g',  
+    'spark.executor.cores': '2',     
+    'spark.driver.memory': '4g',    
     # 'spark.scheduler.mode': 'FAIR'
 }
 

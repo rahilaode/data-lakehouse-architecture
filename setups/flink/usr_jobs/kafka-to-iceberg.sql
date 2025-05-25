@@ -16,7 +16,7 @@ CREATE TABLE t_kafka_weathers_api(
   );
 
 
-SET 'execution.checkpointing.interval' = '10sec';
+SET 'execution.checkpointing.interval' = '1sec';
 SET 'pipeline.operator-chaining.enabled' = 'false';
 
 CREATE TABLE weathers_data

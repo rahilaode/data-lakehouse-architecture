@@ -6,17 +6,17 @@ from datetime import datetime
 from kafka import KafkaProducer
 import os
 
-# Import environment variables
-KAFKA_TOPIC = os.environ.get('KAFKA_TOPIC')
-KAFKA_BROKER_1 = os.environ.get('KAFKA_BROKER_1')
-KAFKA_BROKER_2 = os.environ.get('KAFKA_BROKER_2')
-KAFKA_BROKER_3 = os.environ.get('KAFKA_BROKER_3')
+# Kafka Config
+KAFKA_TOPIC = os.environ.get('KAFKA_TOPIC', 'weather-api-data')
+KAFKA_BROKER_1 = os.environ.get('KAFKA_BROKER_1', 'localhost:9092')
+# KAFKA_BROKER_2 = os.environ.get('KAFKA_BROKER_2', 'localhost:9093')
+# KAFKA_BROKER_3 = os.environ.get('KAFKA_BROKER_3', 'localhost:9094')
 
-# Kafka
-KAFKA_TOPIC = 'weather-api-data'
-KAFKA_BOOTSTRAP_SERVERS = [KAFKA_BROKER_1, KAFKA_BROKER_2, KAFKA_BROKER_3]  
+# KAFKA_BOOTSTRAP_SERVERS = [KAFKA_BROKER_1, KAFKA_BROKER_2, KAFKA_BROKER_3]
 
-# Airport list
+KAFKA_BOOTSTRAP_SERVERS = [KAFKA_BROKER_1]
+
+# Bandara
 airport_names = [
     "Yakutsk Airport", "Mirny Airport", "Khabarovsk-Novy Airport", "Yelizovo Airport",
     "Yuzhno-Sakhalinsk Airport", "Vladivostok International Airport", "Pulkovo Airport",
@@ -50,14 +50,31 @@ airport_names = [
     "Anapa Vityazevo Airport", "Chulman Airport"
 ]
 
-# Kondisi cuaca
-conditions = ["Clear", "Cloudy", "Rain", "Thunderstorm", "Fog", "Snow"]
-
-# Ekstrak nama kota
+# Ambil nama kota dari nama bandara
 def extract_city_name(airport):
     return re.sub(r"(International\s)?Airport.*|Air Base.*|\s+\(.*?\)", "", airport).strip()
 
 cities = [extract_city_name(name) for name in airport_names]
+
+# Kondisi cuaca
+conditions = ["Clear", "Cloudy", "Rain", "Thunderstorm", "Fog", "Snow"]
+
+# Simpan data cuaca sebelumnya untuk tiap kota
+previous_weather = {
+    city: {
+        "temperature": round(random.uniform(-10.0, 30.0), 1),
+        "humidity": random.randint(40, 80),
+        "wind_speed": round(random.uniform(1.0, 10.0), 1),
+        "weather_condition": random.choice(conditions)
+    }
+    for city in cities
+}
+
+# Fungsi pembaruan nilai secara bertahap
+def gradual_update(value, min_val, max_val, delta=1.0):
+    change = random.uniform(-delta, delta)
+    new_val = value + change
+    return max(min(round(new_val, 1), max_val), min_val)
 
 # Kafka Producer
 producer = KafkaProducer(
@@ -69,26 +86,47 @@ producer = KafkaProducer(
 def generate_and_send():
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
     for city in cities:
+        prev = previous_weather[city]
+
+        # Perbarui secara bertahap
+        new_temp = gradual_update(prev["temperature"], -30.0, 40.0, delta=0.3)
+        new_humidity = int(gradual_update(prev["humidity"], 20, 100, delta=2.5))
+        new_wind_speed = gradual_update(prev["wind_speed"], 0.0, 30.0, delta=0.5)
+
+        # 10% kemungkinan berubah kondisi cuaca
+        if random.random() < 0.1:
+            prev["weather_condition"] = random.choice(conditions)
+
+        # Simpan pembaruan
+        previous_weather[city].update({
+            "temperature": new_temp,
+            "humidity": new_humidity,
+            "wind_speed": new_wind_speed,
+        })
+
+        # Format data seperti yang diminta
         weather_data = {
             "timestamp": timestamp,
             "location": city,
-            "weather_condition": random.choice(conditions),
+            "weather_condition": prev["weather_condition"],
             "details": {
-                "temperature": round(random.uniform(-30.0, 40.0), 1),
-                "humidity": random.randint(20, 100),
-                "wind_speed": round(random.uniform(0.0, 30.0), 1),
-            },
+                "temperature": new_temp,
+                "humidity": new_humidity,
+                "wind_speed": new_wind_speed
+            }
         }
+
         producer.send(KAFKA_TOPIC, value=weather_data)
         print(f"Sent to Kafka: {weather_data}")
+
     producer.flush()
 
-# Loop terus setiap men10 detik
+# Main loop
 if __name__ == "__main__":
     try:
         while True:
             print(f"Generating and sending weather data at {datetime.utcnow()}")
             generate_and_send()
-            time.sleep(10)  # Tunggu 10 detik
+            time.sleep(1)  # setiap detik
     except KeyboardInterrupt:
         print("Stopped.")
