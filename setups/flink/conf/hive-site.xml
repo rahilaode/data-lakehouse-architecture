@@ -8,7 +8,7 @@
 
   <property>
     <name>hive.metastore.uris</name>
-    <value>thrift://54.145.98.235:9083</value>
+    <value>thrift://98.83.134.236:9083</value>
   </property>
 
     <property>
@@ -23,7 +23,7 @@
 
     <property>
         <name>fs.s3a.endpoint</name>
-        <value>http://54.145.98.235:9000</value>
+        <value>http://98.83.134.236:9000</value>
     </property>
 
     <property>
