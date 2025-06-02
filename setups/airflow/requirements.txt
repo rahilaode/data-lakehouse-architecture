@@ -8,5 +8,5 @@ apache-airflow-providers-slack
 apache-airflow-providers-apache-spark
 apache-airflow-providers-trino
 pangres
-pyspark
+pyspark==3.5.5
 psycopg2-binary

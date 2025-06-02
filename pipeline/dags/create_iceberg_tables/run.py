@@ -22,7 +22,7 @@ spark_conf = {
     'spark.hadoop.fs.s3a.secret.key': 'minio123',
     'spark.hadoop.fs.s3a.endpoint': f'http://{MINIO_IP}:9000',
     'spark.hadoop.fs.s3a.path.style.access': 'true',
-    'spark.hadoop.fs.s3a.impl': 'org.apache.hadoop.fs.s3a.S3AFileSystem',
+    'spark.hadoop.fs.s3a.impl': 'org.apache.hadoop.fs.s3a.S3AFileSystem'
     # 'spark.dynamicAllocation.enabled': 'true',
     # 'spark.dynamicAllocation.maxExecutors': '3',
     # 'spark.dynamicAllocation.minExecutors': '1',
