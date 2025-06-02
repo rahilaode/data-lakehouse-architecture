@@ -6,6 +6,7 @@ services:
       context: .
     command: bin/spark-class org.apache.spark.deploy.master.Master
     container_name: spark-master
+    hostname: spark-master
     ports:
       - "9090:8080"
       - "7077:7077"
@@ -23,7 +24,7 @@ services:
     environment:
       SPARK_MODE: worker
       SPARK_WORKER_CORES: 2
-      SPARK_WORKER_MEMORY: 8g
+      SPARK_WORKER_MEMORY: 4g
       SPARK_MASTER_URL: spark://spark-master:7077
     networks:
       - riset-lakehouse-networks
